@@ -8,10 +8,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-    public class WebsiteScraper {
-
+public class WebsiteScraper {
     File f1 = new File("D:\\download.txt");
     private List arr = new ArrayList();
     private List arr1 = new ArrayList();
@@ -44,7 +45,7 @@ import java.util.List;
         WebDriver driver = new ChromeDriver();
         driver.get(url.getText());
         java.util.List<WebElement> links = driver.findElements(By.tagName("a"));
-//        System.out.println(links.size());
+        System.out.println(links.size());
         arr.add(links.get(1).getText());
         FileWriter fw;
         fw = new FileWriter(f1);
@@ -54,38 +55,32 @@ import java.util.List;
         }else{
             System.out.println("create a file...!!!");
         }
+        java.util.HashMap<String,String> map= new HashMap<String, String>();
         for (int i = 0; i <= links.size() - 1; i = i + 1) {
-            if (!arr.contains(links.get(i).getText())){
-                arr.add(links.get(i).getText());
+            map.put(links.get(i).getText(),links.get(i).getText());
             }
-           else
-               {
-                   System.out.println("duplicate found...");
-               }
-            }
-        for(int i=0;i<arr.size();i++)
-        {
-            String temp=arr.get(i).toString();
-            System.out.println(" "+temp);
-            fw.write(temp);
+        System.out.println("."+map);
+        for (Map.Entry m :map.entrySet()) {
+            System.out.println(m.getKey());
+            fw.write((String) m.getKey());
             fw.write("\n");
         }
-
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println(arr);
-        System.out.println("//////////////////////////////////////////////////");
+        System.out.println("*********************************");
+            HashMap <String, String> map1 = new HashMap<String, String>();
 
             java.util.List<WebElement> allImages = driver.findElements(By.tagName("img"));
             for (WebElement imageFromList : allImages) {
                 String ImageUrl = imageFromList.getAttribute("src");
-                arr1.add(ImageUrl);
-                System.out.println(ImageUrl);
+                map1.put(ImageUrl,ImageUrl);
+
             }
-            for (int j=0;j<arr1.size();j++){
-                String temp1 =arr1.get(j).toString();
-                fw.write(temp1);
-                fw.write("\n");
-            }
+
+        for (Map.Entry n:map1.entrySet()) {
+            System.out.println(n.getKey()+""+n.getValue());
+            fw.write((String) n.getKey());
+            fw.write("\n");
+        }
+
         fw.close();
     }
     }
