@@ -48,26 +48,44 @@ public class WebsiteScraper {
            JOptionPane.showMessageDialog(null,"Create folder...");
         }
         java.util.HashMap<String,String> map= new HashMap<String, String>();
-        for (int i = 0; i <= links.size() - 1; i = i + 1) {
-            map.put(links.get(i).getText(),links.get(i).getText());
+        map.put(links.get(1).getText(),links.get(1).getText());
+        for (int i = 2; i <= links.size() - 1; i = i + 1) {
+            if(links.get(i).getText().isEmpty()|| (links.get(i).getText()==null))
+            {
+                continue;
             }
-        System.out.println(map);
+
+            if(map.containsKey(links.get(i).getText())) {
+                JOptionPane.showMessageDialog(null,"duplicates found...");
+
+            }else {
+                map.put(links.get(i).getText(),links.get(i).getText());
+            }
+        }
         for (Map.Entry m :map.entrySet()) {
-            System.out.println(m.getKey());
             fw.write((String) m.getKey());
             fw.write("\n");
         }
+
         HashMap <String, String> map1 = new HashMap<String, String>();
             java.util.List<WebElement> allImages = driver.findElements(By.tagName("img"));
             for (WebElement imageFromList : allImages) {
                 String ImageUrl = imageFromList.getAttribute("src");
-                map1.put(ImageUrl,ImageUrl);
+                if (ImageUrl==null){
+                    continue;
+                }
+                if (!map1.containsKey(ImageUrl)){
+                    map1.put(ImageUrl,ImageUrl);
+                }else {
+                    JOptionPane.showMessageDialog(null,"duplicate images.....");
+                }
+
             }
         for (Map.Entry n:map1.entrySet()) {
-            System.out.println(n.getKey()+""+n.getValue());
             fw.write((String) n.getKey());
             fw.write("\n");
         }
         fw.close();
+
     }
 }
