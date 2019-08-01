@@ -4,9 +4,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 public class WebsiteScraper {
@@ -54,19 +53,18 @@ public class WebsiteScraper {
             {
                 continue;
             }
-
             if(map.containsKey(links.get(i).getText())) {
                 JOptionPane.showMessageDialog(null,"duplicates found...");
 
             }else {
                 map.put(links.get(i).getText(),links.get(i).getText());
             }
+            System.out.println(links.get(i).getText());
         }
-        for (Map.Entry m :map.entrySet()) {
-            fw.write((String) m.getKey());
+        for (Map.Entry url :map.entrySet()) {
+            fw.write((String) url.getKey());
             fw.write("\n");
         }
-
         HashMap <String, String> map1 = new HashMap<String, String>();
             java.util.List<WebElement> allImages = driver.findElements(By.tagName("img"));
             for (WebElement imageFromList : allImages) {
@@ -75,17 +73,49 @@ public class WebsiteScraper {
                     continue;
                 }
                 if (!map1.containsKey(ImageUrl)){
-                    map1.put(ImageUrl,ImageUrl);
+                    String match= ImageUrl;
+                    if(match.indexOf("https://")>-1   )
+                    {
+                        map1.put(ImageUrl,ImageUrl);
+                    }
                 }else {
                     JOptionPane.showMessageDialog(null,"duplicate images.....");
                 }
-
+                System.out.println(ImageUrl);
             }
-        for (Map.Entry n:map1.entrySet()) {
-            fw.write((String) n.getKey());
+        for (Map.Entry image:map1.entrySet()) {
+            saveImage((String) image.getKey());
+            fw.write((String) image.getKey());
             fw.write("\n");
         }
         fw.close();
+    }
+    private static boolean isValid(String name)
+    {
+        if(name.indexOf(".png")>-1 || name.indexOf(".jpg")>-1 || name.indexOf(".jpeg")>-1 ||name.indexOf(".gif")>-1)
+        {
+            return true;
+        }
+        return false;
+    }
+    private static void saveImage(String imageUrl) throws IOException {
+        URL url = new URL(imageUrl);
+        String fileName = url.getFile();
+        String [] image_name=fileName.split("/");
+        String edit=image_name[image_name.length-1];
+        if(isValid(edit))
+        {
+            InputStream is = url.openStream();
+            File file=new File("D:\\New folder\\"+edit);
+            OutputStream os = new FileOutputStream(file);
+            byte[] b = new byte[2048];
+            int length;
+            while ((length = is.read(b)) != -1) {
+                os.write(b, 0, length);
+            }
+            is.close();
+            os.close();
+        }
 
     }
 }
